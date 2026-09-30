@@ -1,0 +1,12 @@
+import fs from "node:fs";
+const catalog=fs.readFileSync("content/catalog.ts","utf8");
+const counts=[16,18,18,16,17,17,18,15,14,15];
+const docs=counts.reduce((a,b)=>a+b,0);
+const tutorials=catalog.includes('"Debug a remote surface"')?24:0;
+const exampleFiles=fs.readdirSync("examples").filter(x=>x.endsWith(".cage"));
+for(const f of ["netlify.toml","index.html","next.config.mjs",".github/workflows/cage-docs-zip-sync.yml"])if(!fs.existsSync(f))throw new Error("Missing "+f);
+if(docs!==164)throw new Error("Expected 164 docs, got "+docs);
+if(tutorials!==24)throw new Error("Expected 24 tutorials");
+if(exampleFiles.length!==9)throw new Error("Expected 9 .cage examples, got "+exampleFiles.length);
+console.log("CAGE docs validation PASS");
+console.log({docs,tutorials,examples:exampleFiles.length,staticContentRoutes:docs+tutorials+4});
